@@ -19,9 +19,6 @@ namespace Once
 
     public class Game1 : Game
     {
-        const int RUNTHISMANYTIMES = 100;
-        bool runmaze;
-
         GameState gs;
         public static int TILESIZE = 32;
         public static GraphicsDeviceManager graphics;
