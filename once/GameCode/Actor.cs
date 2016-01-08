@@ -35,84 +35,70 @@ namespace Once
         private Color m_tint;
         private Rectangle m_rect;
         private Vector2 m_pos;
-        protected Vector2 m_vel;
-        private int Currlayer = 0;
-        protected Point IAM = new Point(0, 0);
-        protected bool m_Airborne;
 
+        protected Vector2 m_vel;
+        protected Point IAM = new Point(0, 0);
 
         public Actor(Rectangle rect, Color tint, int layer)
         {
             Rect = rect;
             m_vel = Vector2.Zero;
             m_tint = tint;
-            Currlayer = layer;
         }
         public virtual void UpdateMe(GameTime gt, Level level)
         {
             Position += m_vel;
-            if (m_vel.Y > 0)
-                m_Airborne = true;
-            m_vel += level.Gravity * (float)gt.ElapsedGameTime.TotalSeconds;
-            IAM.X = (int)((m_pos.X + (m_rect.Width/2)) / Game1.TILESIZE);
-            IAM.Y = (int)((m_pos.Y + (m_rect.Height/4)) / Game1.TILESIZE);
 
-
+            IAM.X = (int)((m_pos.X + (m_rect.Width / 2)) / Game1.TILESIZE);
+            IAM.Y = (int)((m_pos.Y + (m_rect.Height / 4)) / Game1.TILESIZE);
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
             sb.Draw(Pixel, m_rect, m_tint);
-            for (int x = IAM.X -1; x < IAM.X +2; x++)
-                for (int y = IAM.Y - 1; y < IAM.Y + 3; y++)
+            for (int x = IAM.X - 1; x < IAM.X + 2; x++)
+                for (int y = IAM.Y - 1; y < IAM.Y + 2; y++)
                 {
                     sb.Draw(Pixel, new Rectangle(x * 32, y * 32, 32, 32), Color.Blue * 0.1f);
                 }
-            sb.Draw(Pixel, new Rectangle((int)m_pos.X + (m_rect.Width / 2), (int)m_pos.Y + (m_rect.Height/4) , 1, 16), Color.Black);
+            sb.Draw(Pixel, new Rectangle((int)m_pos.X + (m_rect.Width / 2), (int)m_pos.Y + (m_rect.Height / 4), 1, 16), Color.Black);
             sb.Draw(Pixel, new Rectangle(IAM.X * 32, IAM.Y * 32, 32, 32), Color.Purple * 0.5f);
         }
-        private void Collision(int[,] col,int tilesize)
+        private void Collision(int[,] col, int tilesize)
         {
-            for (int x = IAM.X -1; x < IAM.X +2; x++)
+            for (int x = IAM.X - 1; x < IAM.X + 2; x++)
                 for (int y = IAM.Y - 1; y < IAM.Y + 3; y++)
-                {
                     if ((y > -1 && y < col.GetLength(0)) && (x > -1 && x < col.GetLength(1)))
-                    if (col[y, x] == 1)
-                    {
-                        Rectangle newrect = new Rectangle(x*tilesize,y*tilesize,tilesize,tilesize);
-
-                        if (m_rect.TouchTopOf(newrect))
+                        if (col[y, x] == 1)
                         {
-                            m_Airborne = false;
-                            if (m_vel.Y > 0)
+                            Rectangle newrect = new Rectangle(x * tilesize, y * tilesize, tilesize, tilesize);
+
+                            if (m_rect.TouchTopOf(newrect))
+                            {
                                 m_vel.Y = 0;
-                            m_pos.Y = newrect.Top - m_rect.Height;
-                            m_rect.Y = (int)m_pos.Y;
-                        }
-                        if (m_rect.TouchLeftOf(newrect))
-                        {
-                            m_pos.X = newrect.X - m_rect.Width;
-                            m_vel.X = 0;
-                            m_rect.X = (int)m_pos.X;
-                        }
-                        else if (m_rect.TouchRightOf(newrect))
-                        {
-                            m_pos.X = newrect.X + newrect.Width;
-                            m_vel.X = 0;
-                            m_rect.X = (int)m_pos.X;
-                        }
+                                m_pos.Y = newrect.Top - m_rect.Height;
+                                m_rect.Y = (int)m_pos.Y;
+                            }
+                            if (m_rect.TouchLeftOf(newrect))
+                            {
+                                m_pos.X = newrect.X - m_rect.Width;
+                                m_vel.X = 0;
+                                m_rect.X = (int)m_pos.X;
+                            }
+                            else if (m_rect.TouchRightOf(newrect))
+                            {
+                                m_pos.X = newrect.X + newrect.Width;
+                                m_vel.X = 0;
+                                m_rect.X = (int)m_pos.X;
+                            }
 
-                        if (m_rect.TouchBottomOf(newrect))
-                        {
-                            if (m_vel.Y < 0)
-                                m_vel.Y = -m_vel.Y;
-                            m_pos.Y = newrect.Bottom;
-                            m_rect.Y = (int)m_pos.Y;
+                            if (m_rect.TouchBottomOf(newrect))
+                            {
+                                m_vel.Y = 0;
+                                m_pos.Y = newrect.Bottom;
+                                m_rect.Y = (int)m_pos.Y;
+                            }
                         }
-                        
-                    }
-                }
         }
-
     }
 
     class Player : Actor
@@ -135,12 +121,6 @@ namespace Once
                 m_vel.X = ((float)gt.ElapsedGameTime.TotalSeconds * 200) * (float)input.CurrPadState.ThumbSticks.Left.X;
             else
                 m_vel.X = 0;
-
-            if (input.WasPressedFront(Buttons.A) && !m_Airborne)
-            {
-                m_vel.Y = - 8.5f;
-                m_Airborne = true;
-            }
 
             base.UpdateMe(gt,level);
         }
