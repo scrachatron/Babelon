@@ -20,7 +20,7 @@ namespace Once
         private Rectangle bounds;
         private int currentregion;
 
-        public Random RNG { get; set; }
+        private Random RNG { get; set; }
 
         public Maze(int Width, int Height)
         {
@@ -99,6 +99,47 @@ namespace Once
 
             Connect();
             RemoveDeadEnds();
+
+        }
+
+        public Maze(Point size, int maxrooms, int chance, int roomsize, int wind, int seed)
+        {
+            roomtries = maxrooms;
+            ConnectorChance = chance;
+            roomExtraSize = roomsize;
+            windingPercent = wind;
+
+            if (size.X % 2 == 0)
+                size.X--;
+            if (size.Y % 2 == 0)
+                size.Y--;
+            
+            RNG = new Random(seed);
+
+            m_stage = new int[size.X, size.Y];
+            m_regions = new int[size.X, size.Y];
+            bounds = new Rectangle(0, 0, size.X, size.Y);
+
+            for (int x = 0; x < m_stage.GetLength(0); x++)
+                for (int y = 0; y < m_stage.GetLength(1); y++)
+                    m_stage[x, y] = 1;
+
+            AddRooms();
+
+            //Fill all the empty space with mazes.
+            for (var y = 1; y < bounds.Height; y += 2)
+            {
+                for (var x = 1; x < bounds.Width; x += 2)
+                {
+                    Point pos = new Point(x, y);
+                    if (m_stage[x, y] != 1) continue;
+                    _growMaze(pos);
+                }
+            }
+
+            Connect();
+            RemoveDeadEnds();
+
 
         }
 

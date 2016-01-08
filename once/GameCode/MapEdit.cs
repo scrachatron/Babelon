@@ -79,18 +79,7 @@ namespace Once
         public void RandomFill(int Percent)
         {
             m_maze = new Maze(new Point(levelCreate.Map.GetLength(0), levelCreate.Map.GetLength(1)),
-                4000,4,0,30);
-
-
-            //Random RNG = new Random();
-            //for (int x = 0; x < levelCreate.Map.GetLength(0); x++)
-            //    for (int y = 0; y < levelCreate.Map.GetLength(1); y++)
-            //        if (levelCreate.Map[x, y] <= 1)
-            //            if (RNG.Next(0, 100) < Percent)
-            //                levelCreate.Map[x, y] = 1;
-            //            else
-            //                levelCreate.Map[x, y] = 0;
-            Random RNG = new Random();
+                50,4,7,30,5);
 
             List<Rectangle> m_exitRooms = new List<Rectangle>();
             List<Point> m_exits = new List<Point>();
@@ -99,8 +88,8 @@ namespace Once
             {
                 do
                 {
-                    m_exitRooms.Add(m_maze.m_rooms[RNG.Next(0, m_maze.m_rooms.Count)]);
-                    m_exitRooms.Add(m_maze.m_rooms[RNG.Next(0, m_maze.m_rooms.Count)]);
+                    m_exitRooms.Add(m_maze.m_rooms[Game1.RNG.Next(0, m_maze.m_rooms.Count)]);
+                    m_exitRooms.Add(m_maze.m_rooms[Game1.RNG.Next(0, m_maze.m_rooms.Count)]);
 
                     if (m_exitRooms[0] != m_exitRooms[1])
                     {
@@ -109,8 +98,8 @@ namespace Once
                     m_exitRooms.Clear();
                 } while (true);
 
-                m_exits.Add(new Point(m_exitRooms[0].X + RNG.Next(1, m_exitRooms[0].Width - 1), m_exitRooms[0].Y + RNG.Next(1, m_exitRooms[0].Height - 1)));
-                m_exits.Add(new Point(m_exitRooms[1].X + RNG.Next(1, m_exitRooms[1].Width - 1), m_exitRooms[1].Y + RNG.Next(1, m_exitRooms[1].Height - 1)));
+                m_exits.Add(new Point(m_exitRooms[0].X + Game1.RNG.Next(1, m_exitRooms[0].Width - 1), m_exitRooms[0].Y +Game1.RNG.Next(1, m_exitRooms[0].Height - 1)));
+                m_exits.Add(new Point(m_exitRooms[1].X +Game1.RNG.Next(1, m_exitRooms[1].Width - 1), m_exitRooms[1].Y +Game1.RNG.Next(1, m_exitRooms[1].Height - 1)));
 
             }
             else if (m_maze.m_rooms.Count == 1)
@@ -119,8 +108,8 @@ namespace Once
                 m_exitRooms.Add(m_maze.m_rooms[0]);
                 do
                 {
-                    m_exits.Add(new Point(m_exitRooms[0].X + RNG.Next(1, m_exitRooms[0].Width - 1), m_exitRooms[0].Y + RNG.Next(1, m_exitRooms[0].Height - 1)));
-                    m_exits.Add(new Point(m_exitRooms[0].X + RNG.Next(1, m_exitRooms[0].Width - 1), m_exitRooms[0].Y + RNG.Next(1, m_exitRooms[0].Height - 1)));
+                    m_exits.Add(new Point(m_exitRooms[0].X +Game1.RNG.Next(1, m_exitRooms[0].Width - 1), m_exitRooms[0].Y +Game1.RNG.Next(1, m_exitRooms[0].Height - 1)));
+                    m_exits.Add(new Point(m_exitRooms[0].X +Game1.RNG.Next(1, m_exitRooms[0].Width - 1), m_exitRooms[0].Y +Game1.RNG.Next(1, m_exitRooms[0].Height - 1)));
                     if (m_exits[0] != m_exits[1])
                     {
                         break;
@@ -133,6 +122,10 @@ namespace Once
                 m_exits.Add(new Point(0,0));
                 m_exits.Add(new Point(0, 1));
             }
+
+            //m_exits.Clear();
+            //m_exits.Add(new Point(0, 0));
+            //m_exits.Add(new Point(0, 1));
 
             levelCreate.Map = m_maze.m_stage;
 
