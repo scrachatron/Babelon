@@ -37,7 +37,7 @@ namespace Once
         private Level levelCreate;
         public bool help;
         public bool MapChanged;
-        public Maze m_maze;
+        public MazeGenerator m_maze;
 
         public Level Level
         {
@@ -72,13 +72,12 @@ namespace Once
             MapChanged = true;
         }
         public void Reset(int Tilewidth)
-        {
-            levelCreate.Recalculate();
+        { 
             MapChanged = true;
         }
         public void RandomFill(int Percent)
         {
-            m_maze = new Maze(new Point(levelCreate.Map.GetLength(0), levelCreate.Map.GetLength(1)),
+            m_maze = new MazeGenerator(new Point(levelCreate.Map.GetLength(0), levelCreate.Map.GetLength(1)),
                 50,4,7,30,5);
 
             List<Rectangle> m_exitRooms = new List<Rectangle>();
@@ -132,7 +131,6 @@ namespace Once
             levelCreate.Map[m_exits[0].X, m_exits[0].Y] = 2;
             levelCreate.Map[m_exits[1].X, m_exits[1].Y] = 3;
 
-            levelCreate.FindPoints();
             MapChanged = true;
         }
         public void UpdateMe(GameTime gt, InputManager Input)

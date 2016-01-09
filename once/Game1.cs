@@ -15,8 +15,6 @@ namespace Once
         LevelEdit,
         GamePlay
     }
-
-
     public class Game1 : Game
     {
         GameState gs;
@@ -25,23 +23,13 @@ namespace Once
         public static readonly Random RNG = new Random();
 
         SpriteBatch spriteBatch;
-        Dictionary<string, Level> m_levels;
+        Level m_level;
         Player m_Player;
         InputManager m_input;
         MapEdit edit;
-        Astar a_star;
-        Lee lee;
-
-        bool runningalgorythem;
-        float RunningTime;
-        float counts;
-        List<float> RunningTimes;
-        Stopwatch countdown;
-        string warning_string = "No Path Found";
-        Vector2 warning_string_Legnth;
 
         public Game1()
-        {
+        { 
             graphics = new GraphicsDeviceManager(this);
             //graphics.PreferredBackBufferWidth = 1920;
             //graphics.PreferredBackBufferHeight = 1080;
@@ -57,10 +45,10 @@ namespace Once
         {
             Pixelclass.Content = Content;
             m_Player = new Player();
-
             m_input = new InputManager();
-
             m_input = new InputManager(PlayerIndex.One);
+
+            m_level = new Level();
 
             base.Initialize();
         }
@@ -93,13 +81,9 @@ namespace Once
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //spriteBatch.Begin(SpriteSortMode.BackToFront,null,SamplerState.PointClamp,DepthStencilState.Default,RasterizerState.CullNone,null);
             spriteBatch.Begin();
-
-            
+            m_level.DrawMe(spriteBatch);
             spriteBatch.End();
-            
-
 
             base.Draw(gameTime);
         }

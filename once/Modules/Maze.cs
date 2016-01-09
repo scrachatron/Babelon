@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Once
 {
-    class Maze
+    class MazeGenerator
     {
         public int[,] m_stage;
         public int[,] m_regions;
@@ -15,6 +15,8 @@ namespace Once
         private int ConnectorChance;
         private int roomExtraSize;
         private int windingPercent;
+        private int seed;
+        private Point size;
 
         public List<Rectangle> m_rooms = new List<Rectangle>();
         private Rectangle bounds;
@@ -22,12 +24,19 @@ namespace Once
 
         private Random RNG { get; set; }
 
-        public Maze(int Width, int Height)
+        public MazeGenerator()
+        {
+
+        }
+
+        public MazeGenerator(int Width, int Height)
         {
             roomtries = 50;
             ConnectorChance = 5;
             roomExtraSize = 6;
             windingPercent = 30;
+
+            size = new Point(Width, Height);
 
             if (Width % 2 == 0)
                 Width--;
@@ -36,38 +45,16 @@ namespace Once
 
             RNG = new Random();
 
-            m_stage = new int[Width, Height];
-            m_regions = new int[Width, Height];
-            bounds = new Rectangle(0, 0, Width, Height);
-
-            for (int x = 0; x < m_stage.GetLength(0); x++)
-                for (int y = 0; y < m_stage.GetLength(1); y++)
-                    m_stage[x, y] = 1;
-
-            AddRooms();
-
-            //Fill all the empty space with mazes.
-            for (var y = 1; y < bounds.Height; y += 2)
-            {
-                for (var x = 1; x < bounds.Width; x += 2)
-                {
-                    Point pos = new Point(x, y);
-                    if (m_stage[x, y] != 1) continue;
-                    _growMaze(pos);
-                }
-            }
-
-            Connect();
-            RemoveDeadEnds();
+            GenerateMaze();
         }
 
-        public Maze(Point size, int maxrooms,int chance,int roomsize,int wind)
+        public MazeGenerator(Point Size, int maxrooms,int chance,int roomsize,int wind)
         {
-
             roomtries = maxrooms;
             ConnectorChance = chance;
             roomExtraSize = roomsize;
             windingPercent = wind;
+            size = Size;
 
             if (size.X % 2 == 0)
                 size.X--;
@@ -76,33 +63,10 @@ namespace Once
 
             RNG = new Random();
 
-            m_stage = new int[size.X, size.Y];
-            m_regions = new int[size.X, size.Y];
-            bounds = new Rectangle(0, 0, size.X, size.Y);
-
-            for (int x = 0; x < m_stage.GetLength(0); x++)
-                for (int y = 0; y < m_stage.GetLength(1); y++)
-                    m_stage[x, y] = 1;
-
-            AddRooms();
-
-            //Fill all the empty space with mazes.
-            for (var y = 1; y < bounds.Height; y += 2)
-            {
-                for (var x = 1; x < bounds.Width; x += 2)
-                {
-                    Point pos = new Point(x, y);
-                    if (m_stage[x, y] != 1) continue;
-                    _growMaze(pos);
-                }
-            }
-
-            Connect();
-            RemoveDeadEnds();
-
+            GenerateMaze();
         }
 
-        public Maze(Point size, int maxrooms, int chance, int roomsize, int wind, int seed)
+        public MazeGenerator(Point size, int maxrooms, int chance, int roomsize, int wind, int seed)
         {
             roomtries = maxrooms;
             ConnectorChance = chance;
@@ -116,6 +80,11 @@ namespace Once
             
             RNG = new Random(seed);
 
+            GenerateMaze();
+        }
+
+        private void GenerateMaze()
+        {
             m_stage = new int[size.X, size.Y];
             m_regions = new int[size.X, size.Y];
             bounds = new Rectangle(0, 0, size.X, size.Y);
@@ -125,8 +94,6 @@ namespace Once
                     m_stage[x, y] = 1;
 
             AddRooms();
-
-            //Fill all the empty space with mazes.
             for (var y = 1; y < bounds.Height; y += 2)
             {
                 for (var x = 1; x < bounds.Width; x += 2)
@@ -139,10 +106,8 @@ namespace Once
 
             Connect();
             RemoveDeadEnds();
-
-
         }
-
+    
         private void AddRooms()
         {
             for (int i = 0; i < roomtries; i++)
@@ -527,6 +492,56 @@ namespace Once
             return Direction.Null;
         }
     }
+}
+
+struct MazeInfo
+{
+    private int Roomtries;
+    private int ConnectorChance;
+    private int RoomExtraSize;
+    private int WindingPercent;
+    private int Seed;
+    public int[,] Map;
+    public List<Rectangle> Rooms;
+
+    public MazeInfo(Point Size, int maxrooms, int chance, int roomsize, int wind, int seed)
+    {
+        Rooms = new List<Rectangle>();
+
+        if (Size.X % 2 == 0)
+            Size.X++;
+        if (Size.Y % 2 == 0)
+            Size.Y++;
+
+        Map = new int[Size.X, Size.Y];
+
+        if (maxrooms > 1)
+        {
+            Roomtries = maxrooms;
+        } else
+        { Roomtries = 1; }
+
+        for (int x = 0; x < Map.GetLength(0); x++)
+            for (int y = 0; y < Map.GetLength(1); y++)
+                Map[x, y] = 1;
+
+        if (wind >= 0 && wind <=100)
+        {
+            WindingPercent = wind;
+        }
+        else { WindingPercent = 30; }
+
+        if (chance >= 0 && chance >= 100)
+        {
+            ConnectorChance = chance;
+        } else { ConnectorChance = 3; }
+
+        RoomExtraSize = roomsize;
+
+        Seed = seed;
+
+    }
+
 }
 
 enum Direction

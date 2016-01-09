@@ -11,17 +11,19 @@ namespace Once
 
     class Level : Pixelclass
     {
+        
         public int[,] Map;
         public Point m_StartPos;
         public Point m_WinPos;
         private Point m_LayerSize;
-        
+        private MazeGenerator m_mazeGen;
 
         public Level()
         {
-            
+            m_mazeGen = new MazeGenerator();
 
         }
+
 
         public void DrawMe(SpriteBatch sb)
         {
