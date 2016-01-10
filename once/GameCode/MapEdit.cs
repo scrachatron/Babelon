@@ -77,8 +77,7 @@ namespace Once
         }
         public void RandomFill(int Percent)
         {
-            m_maze = new MazeGenerator(new Point(levelCreate.Map.GetLength(0), levelCreate.Map.GetLength(1)),
-                50,4,7,30,5);
+            m_maze = new MazeGenerator();
 
             List<Rectangle> m_exitRooms = new List<Rectangle>();
             List<Point> m_exits = new List<Point>();
@@ -126,8 +125,7 @@ namespace Once
             //m_exits.Add(new Point(0, 0));
             //m_exits.Add(new Point(0, 1));
 
-            levelCreate.Map = m_maze.m_stage;
-
+            
             levelCreate.Map[m_exits[0].X, m_exits[0].Y] = 2;
             levelCreate.Map[m_exits[1].X, m_exits[1].Y] = 3;
 

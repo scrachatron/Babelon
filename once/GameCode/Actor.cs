@@ -36,7 +36,8 @@ namespace Once
         private Rectangle m_rect;
         private Vector2 m_pos;
 
-        protected Vector2 m_vel;
+        private Vector2 m_vel;
+        protected Point MoveHere = new Point(0, 0);
         protected Point IAM = new Point(0, 0);
 
         public Actor(Rectangle rect, Color tint, int layer)
@@ -47,57 +48,28 @@ namespace Once
         }
         public virtual void UpdateMe(GameTime gt, Level level)
         {
-            Position += m_vel;
+            m_rect.Width = level.LayerSize.X;
+            m_rect.Height = level.LayerSize.Y;
+            m_rect.X = (int)m_pos.X;
+            m_rect.Y = (int)m_pos.Y;
 
-            IAM.X = (int)((m_pos.X + (m_rect.Width / 2)) / Game1.TILESIZE);
-            IAM.Y = (int)((m_pos.Y + (m_rect.Height / 4)) / Game1.TILESIZE);
+            IAM.X = (int)((m_pos.X + m_rect.Width/2) / level.LayerSize.X);
+            IAM.Y = (int)((m_pos.Y + m_rect.Height / 2) / level.LayerSize.Y);
+
+            Collision(level);
+            //Position += m_vel;
+            m_vel = Vector2.Zero;
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
-            sb.Draw(Pixel, m_rect, m_tint);
-            for (int x = IAM.X - 1; x < IAM.X + 2; x++)
-                for (int y = IAM.Y - 1; y < IAM.Y + 2; y++)
-                {
-                    sb.Draw(Pixel, new Rectangle(x * 32, y * 32, 32, 32), Color.Blue * 0.1f);
-                }
-            sb.Draw(Pixel, new Rectangle((int)m_pos.X + (m_rect.Width / 2), (int)m_pos.Y + (m_rect.Height / 4), 1, 16), Color.Black);
-            sb.Draw(Pixel, new Rectangle(IAM.X * 32, IAM.Y * 32, 32, 32), Color.Purple * 0.5f);
+            sb.Draw(Pixel, m_rect , m_tint);
         }
-        private void Collision(int[,] col, int tilesize)
+        private void Collision(Level lvl)
         {
-            for (int x = IAM.X - 1; x < IAM.X + 2; x++)
-                for (int y = IAM.Y - 1; y < IAM.Y + 3; y++)
-                    if ((y > -1 && y < col.GetLength(0)) && (x > -1 && x < col.GetLength(1)))
-                        if (col[y, x] == 1)
-                        {
-                            Rectangle newrect = new Rectangle(x * tilesize, y * tilesize, tilesize, tilesize);
-
-                            if (m_rect.TouchTopOf(newrect))
-                            {
-                                m_vel.Y = 0;
-                                m_pos.Y = newrect.Top - m_rect.Height;
-                                m_rect.Y = (int)m_pos.Y;
-                            }
-                            if (m_rect.TouchLeftOf(newrect))
-                            {
-                                m_pos.X = newrect.X - m_rect.Width;
-                                m_vel.X = 0;
-                                m_rect.X = (int)m_pos.X;
-                            }
-                            else if (m_rect.TouchRightOf(newrect))
-                            {
-                                m_pos.X = newrect.X + newrect.Width;
-                                m_vel.X = 0;
-                                m_rect.X = (int)m_pos.X;
-                            }
-
-                            if (m_rect.TouchBottomOf(newrect))
-                            {
-                                m_vel.Y = 0;
-                                m_pos.Y = newrect.Bottom;
-                                m_rect.Y = (int)m_pos.Y;
-                            }
-                        }
+            if (lvl.Map[IAM.X + MoveHere.X, IAM.Y + MoveHere.Y] == 0)
+            {
+                m_pos += MoveHere.ToVector2();
+            }
         }
     }
 
@@ -109,24 +81,31 @@ namespace Once
         }
 
         public Player()
-            :base(new Rectangle(64,128,24,58),Color.Red, 0)
+            :base(new Rectangle(0,0,14,14),Color.Red, 0)
         {
 
         }
         public void UpdateMe(GameTime gt, Level level, InputManager input)
         {
-            if (input.CurrPadState.ThumbSticks.Left.X < -0.1)
-                m_vel.X = ((float)gt.ElapsedGameTime.TotalSeconds * 200) * (float)input.CurrPadState.ThumbSticks.Left.X;
-            else if (input.CurrPadState.ThumbSticks.Left.X > 0.1)
-                m_vel.X = ((float)gt.ElapsedGameTime.TotalSeconds * 200) * (float)input.CurrPadState.ThumbSticks.Left.X;
-            else
-                m_vel.X = 0;
+            if (input.IsDown(Keys.Left))
+                MoveHere.X += -1;
+            if (input.IsDown(Keys.Right))
+                MoveHere.X += 1;
+            if (input.IsDown(Keys.Up))
+                MoveHere.Y += -1;
+            if (input.IsDown(Keys.Down))
+                MoveHere.Y += 1;
 
-            base.UpdateMe(gt,level);
+            base.UpdateMe(gt, level);
+
+            MoveHere.X = 0;
+            MoveHere.Y = 0;
         }
         public override void DrawMe(SpriteBatch sb)
         {
+            
             base.DrawMe(sb);
+            sb.DrawString(Font, IAM.X + "," + IAM.Y, Position, Color.White);
         }
     }
 }

@@ -108,6 +108,7 @@
     <Compile Include="GameCode\Actor.cs" />
     <Compile Include="Modules\Astar.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Modules\Camera.cs" />
     <Compile Include="Modules\Input.cs" />
     <Compile Include="Modules\Lee.cs" />
     <Compile Include="GameCode\Level.cs" />
@@ -151,7 +152,7 @@
     <None Include="Once_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="C:\Users\scrac\OneDrive\Documents\GitHub\MonoGame\MonoGame.Framework\MonoGame.Framework.Windows.csproj">
+    <ProjectReference Include="..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.Windows.csproj">
       <Project>{7de47032-a904-4c29-bd22-2d235e8d91ba}</Project>
       <Name>MonoGame.Framework.Windows</Name>
     </ProjectReference>

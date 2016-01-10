@@ -11,12 +11,12 @@ namespace Once
         public int[,] m_stage;
         public int[,] m_regions;
 
+        public MazeInfo MapInformation;
+
         private int roomtries;
         private int ConnectorChance;
         private int roomExtraSize;
         private int windingPercent;
-        private int seed;
-        private Point size;
 
         public List<Rectangle> m_rooms = new List<Rectangle>();
         private Rectangle bounds;
@@ -26,68 +26,31 @@ namespace Once
 
         public MazeGenerator()
         {
-
-        }
-
-        public MazeGenerator(int Width, int Height)
-        {
-            roomtries = 50;
-            ConnectorChance = 5;
-            roomExtraSize = 6;
-            windingPercent = 30;
-
-            size = new Point(Width, Height);
-
-            if (Width % 2 == 0)
-                Width--;
-            if (Height % 2 == 0)
-                Height--;
-
             RNG = new Random();
-
-            GenerateMaze();
         }
-
-        public MazeGenerator(Point Size, int maxrooms,int chance,int roomsize,int wind)
+        public MazeGenerator(int seed)
         {
-            roomtries = maxrooms;
-            ConnectorChance = chance;
-            roomExtraSize = roomsize;
-            windingPercent = wind;
-            size = Size;
-
-            if (size.X % 2 == 0)
-                size.X--;
-            if (size.Y % 2 == 0)
-                size.Y--;
-
-            RNG = new Random();
-
-            GenerateMaze();
-        }
-
-        public MazeGenerator(Point size, int maxrooms, int chance, int roomsize, int wind, int seed)
-        {
-            roomtries = maxrooms;
-            ConnectorChance = chance;
-            roomExtraSize = roomsize;
-            windingPercent = wind;
-
-            if (size.X % 2 == 0)
-                size.X--;
-            if (size.Y % 2 == 0)
-                size.Y--;
-            
             RNG = new Random(seed);
-
-            GenerateMaze();
         }
 
-        private void GenerateMaze()
+        private void SetValues(MazeInfo inf)
         {
-            m_stage = new int[size.X, size.Y];
-            m_regions = new int[size.X, size.Y];
-            bounds = new Rectangle(0, 0, size.X, size.Y);
+            MapInformation = inf;
+            m_stage = MapInformation.Map;
+            m_rooms = MapInformation.Rooms;
+
+            roomtries = MapInformation.Roomtries;
+            ConnectorChance = MapInformation.ConnectorChance;
+            roomExtraSize = MapInformation.RoomExtraSize;
+            windingPercent = MapInformation.WindingPercent;
+    }
+
+        public void GenerateMaze(MazeInfo inf)
+        {
+            SetValues(inf);
+
+            m_regions = new int[inf.Map.GetLength(0), inf.Map.GetLength(1)];
+            bounds = new Rectangle(0, 0, inf.Map.GetLength(0), inf.Map.GetLength(1));
 
             for (int x = 0; x < m_stage.GetLength(0); x++)
                 for (int y = 0; y < m_stage.GetLength(1); y++)
@@ -496,15 +459,14 @@ namespace Once
 
 struct MazeInfo
 {
-    private int Roomtries;
-    private int ConnectorChance;
-    private int RoomExtraSize;
-    private int WindingPercent;
-    private int Seed;
+    public int Roomtries;
+    public int ConnectorChance;
+    public int RoomExtraSize;
+    public int WindingPercent;
     public int[,] Map;
     public List<Rectangle> Rooms;
 
-    public MazeInfo(Point Size, int maxrooms, int chance, int roomsize, int wind, int seed)
+    public MazeInfo(Point Size, int maxrooms, int chance, int roomsize, int wind)
     {
         Rooms = new List<Rectangle>();
 
@@ -537,8 +499,6 @@ struct MazeInfo
         } else { ConnectorChance = 3; }
 
         RoomExtraSize = roomsize;
-
-        Seed = seed;
 
     }
 
