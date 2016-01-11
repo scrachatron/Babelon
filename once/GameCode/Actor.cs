@@ -72,13 +72,15 @@ namespace Once
                     && lvl.Map[IAM.X, IAM.Y + MoveHere.Y] == 0)
                     if (lvl.Map[IAM.X + MoveHere.X, IAM.Y + MoveHere.Y] == 0)
                     {
-                        m_pos += MoveHere.ToVector2();
+                        m_pos += MoveHere.ToVector2() * 2;
+                        return;
                     }
             }
 
             if (lvl.Map[IAM.X + MoveHere.X, IAM.Y + MoveHere.Y] == 0)
             {
-                m_pos += MoveHere.ToVector2();
+                m_pos += MoveHere.ToVector2() * 2;
+                return;
             }
         }
     }

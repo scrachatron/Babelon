@@ -52,7 +52,7 @@ namespace Once
             
             base.Initialize();
 
-            m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 40));
+            m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 100));
             m_Player.Position = new Vector2(m_level.m_StartPos.X * m_level.LayerSize.X, m_level.m_StartPos.Y * m_level.LayerSize.Y);
 
         }

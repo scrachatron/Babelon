@@ -31,7 +31,8 @@ namespace Once
             m_mazeGen = new MazeGenerator();
 
             RegenMaze();
-            m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 46));
+            //m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 46));
+
         }
 
         public void RegenMaze()
