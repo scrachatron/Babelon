@@ -52,7 +52,7 @@ namespace Once
             
             base.Initialize();
 
-            m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 100));
+            m_level.RegenMaze();
             m_Player.VirtualPosition = m_level.m_StartPos;
 
         }
@@ -94,7 +94,7 @@ namespace Once
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, RasterizerState.CullNone, null, m_cam.Transform);
-            m_level.DrawMe(spriteBatch);
+            m_level.DrawMe(spriteBatch,m_Player.VirtualPosition);
             m_Player.DrawMe(spriteBatch);
             spriteBatch.End();
 

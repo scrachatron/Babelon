@@ -67,13 +67,10 @@ namespace Once
             m_rect.X = (int)Math.Round(m_position.X);
             m_rect.Y = (int)Math.Round(m_position.Y);
 
-            if (m_rect.X != (int)m_targetPos.X || m_rect.Y != (int)m_targetPos.Y)
-            {
-                m_velocity = new Vector2(m_virtualpos.X * level.LayerSize.X - Position.X, m_virtualpos.Y * level.LayerSize.Y - Position.Y);
-                m_position += m_velocity/4;
-            }
-            else
-                Collision(level);
+
+            m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+
+            Collision(level);
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
@@ -114,13 +111,13 @@ namespace Once
         }
         public void UpdateMe(GameTime gt, Level level, InputManager input)
         {
-            if (input.IsDown(Keys.Left))
+            if (input.WasPressedFront(Keys.Left) || input.HeldFor(Keys.Left, 0.7f, gt))
                 MoveHere.X += -1;
-            if (input.IsDown(Keys.Right))
+            if (input.WasPressedFront(Keys.Right) || input.HeldFor(Keys.Right, 0.7f, gt))
                 MoveHere.X += 1;
-            if (input.IsDown(Keys.Up))
+            if (input.WasPressedFront(Keys.Up) || input.HeldFor(Keys.Up, 0.7f, gt))
                 MoveHere.Y += -1;
-            if (input.IsDown(Keys.Down))
+            if (input.WasPressedFront(Keys.Down) || input.HeldFor(Keys.Down, 0.7f, gt))
                 MoveHere.Y += 1;
 
             base.UpdateMe(gt, level);

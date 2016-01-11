@@ -37,7 +37,7 @@ namespace Once
 
         public void RegenMaze()
         {
-            m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 46));
+            m_mazeGen.GenerateMaze(new MazeInfo(new Point(128, 128), 40, 30, 10, 0));
             Map = m_mazeGen.MapInformation.Map;
 
             m_LayerSize = new Point(32, 32);
@@ -47,7 +47,7 @@ namespace Once
 
         }
 
-        public void DrawMe(SpriteBatch sb)
+        public void DrawMe(SpriteBatch sb, Point player)
         {
             Map = m_mazeGen.MapInformation.Map;
             for (int x = 0; x < Map.GetLength(0); x++)

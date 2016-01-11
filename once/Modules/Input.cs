@@ -176,6 +176,22 @@ namespace Once
                 return false;
             }
         }
+        public bool HeldFor(Keys k, float t, GameTime gt)
+        {
+            if (WasPressedFront(k) || WasPressedBack(k))
+                timer = 0;
+
+            if (IsDown(k) && timer >= t)
+            {
+                return true;
+            }
+            else if (IsDown(k))
+            {
+                timer += (float)gt.ElapsedGameTime.TotalSeconds;
+                return false;
+            }
+            return false;
+        }
 
 
     }

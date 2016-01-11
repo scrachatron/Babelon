@@ -190,9 +190,9 @@ namespace Once
                 }
             }
         }
-        public void DrawMe(SpriteBatch sb)
+        public void DrawMe(SpriteBatch sb,Point p)
         {
-            levelCreate.DrawMe(sb);
+            levelCreate.DrawMe(sb,p);
         }
 
 
