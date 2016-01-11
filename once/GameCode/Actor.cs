@@ -66,6 +66,16 @@ namespace Once
         }
         private void Collision(Level lvl)
         {
+            if (MoveHere.X != 0 && MoveHere.Y != 0)
+            {
+                if (lvl.Map[IAM.X + MoveHere.X,IAM.Y] == 0
+                    && lvl.Map[IAM.X, IAM.Y + MoveHere.Y] == 0)
+                    if (lvl.Map[IAM.X + MoveHere.X, IAM.Y + MoveHere.Y] == 0)
+                    {
+                        m_pos += MoveHere.ToVector2();
+                    }
+            }
+
             if (lvl.Map[IAM.X + MoveHere.X, IAM.Y + MoveHere.Y] == 0)
             {
                 m_pos += MoveHere.ToVector2();
@@ -103,7 +113,6 @@ namespace Once
         }
         public override void DrawMe(SpriteBatch sb)
         {
-            
             base.DrawMe(sb);
             sb.DrawString(Font, IAM.X + "," + IAM.Y, Position, Color.White);
         }
