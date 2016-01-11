@@ -10,45 +10,70 @@ namespace Once
 {
     class Actor : Pixelclass
     {
-        public Rectangle Rect
+        private Rectangle Rect
         {
             get { return m_rect; }
             set
             {
                 m_rect = value;
-                m_pos.X = value.X;
-                m_pos.Y = value.Y;
+                m_position.X = value.X;
+                m_position.Y = value.Y;
             }
 
         }
-        public Point Position
+        public Point VirtualPosition
         {
-            get { return m_pos; }
+            get { return m_virtualpos; }
             set
             {
-                m_pos = value;
+                m_virtualpos = value;
+                m_position.X = value.X * m_rect.Width;
+                m_position.Y = value.Y * m_rect.Height;
+                m_targetPos = m_position.ToPoint();
+                m_velocity = Vector2.Zero;
+            }
+        }
+        public Vector2 Position
+        {
+            get { return m_position; }
+            set { m_position = value;
+                m_targetPos = value.ToPoint();
+                m_velocity = Vector2.Zero;
             }
         }
 
         private Color m_tint;
         private Rectangle m_rect;
-        private Point m_pos;
+
+        private Vector2 m_position;
+        private Vector2 m_velocity;
+        private Point m_targetPos;
+
+        private Point m_virtualpos;
 
         protected Point MoveHere = new Point(0, 0);
 
         public Actor(Rectangle rect, Color tint, int layer)
         {
             Rect = rect;
+            m_position = new Vector2(rect.X, rect.Y);
+            m_targetPos = m_position.ToPoint();
             m_tint = tint;
         }
         public virtual void UpdateMe(GameTime gt, Level level)
         {
             m_rect.Width = level.LayerSize.X;
             m_rect.Height = level.LayerSize.Y;
-            m_rect.X = (int)m_pos.X * level.LayerSize.X;
-            m_rect.Y = (int)m_pos.Y * level.LayerSize.Y;
+            m_rect.X = (int)Math.Round(m_position.X);
+            m_rect.Y = (int)Math.Round(m_position.Y);
 
-            Collision(level);
+            if (m_rect.X != (int)m_targetPos.X || m_rect.Y != (int)m_targetPos.Y)
+            {
+                m_velocity = new Vector2(m_virtualpos.X * level.LayerSize.X - Position.X, m_virtualpos.Y * level.LayerSize.Y - Position.Y);
+                m_position += m_velocity/4;
+            }
+            else
+                Collision(level);
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
@@ -58,18 +83,22 @@ namespace Once
         {
             if (MoveHere.X != 0 && MoveHere.Y != 0)
             {
-                if (lvl.Map[Position.X + MoveHere.X,Position.Y] == 0
-                    && lvl.Map[Position.X, Position.Y + MoveHere.Y] == 0)
-                    if (lvl.Map[Position.X + MoveHere.X, Position.Y + MoveHere.Y] == 0)
+                if (lvl.Map[VirtualPosition.X + MoveHere.X,VirtualPosition.Y] == 0
+                    && lvl.Map[VirtualPosition.X, VirtualPosition.Y + MoveHere.Y] == 0)
+                    if (lvl.Map[VirtualPosition.X + MoveHere.X, VirtualPosition.Y + MoveHere.Y] == 0)
                     {
-                        m_pos += MoveHere;
+                        m_virtualpos += MoveHere;
+                        m_targetPos = (m_virtualpos * lvl.LayerSize);
+                        
                         return;
                     }
             }
 
-            if (lvl.Map[Position.X + MoveHere.X, Position.Y + MoveHere.Y] == 0)
+            if (lvl.Map[VirtualPosition.X + MoveHere.X, VirtualPosition.Y + MoveHere.Y] == 0)
             {
-                m_pos += MoveHere;
+                m_virtualpos += MoveHere;
+                m_targetPos = (m_virtualpos * lvl.LayerSize);
+
                 return;
             }
         }
@@ -79,7 +108,7 @@ namespace Once
     {
 
         public Player()
-            :base(new Rectangle(0,0,14,14),Color.Red, 0)
+            :base(new Rectangle(0,0,32,32),Color.Red, 0)
         {
 
         }
@@ -102,7 +131,7 @@ namespace Once
         public override void DrawMe(SpriteBatch sb)
         {
             base.DrawMe(sb);
-            sb.DrawString(Font, Position.X + "," + Position.Y, new Vector2(Rect.X,Rect.Y), Color.White);
+            sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
         }
     }
 }
