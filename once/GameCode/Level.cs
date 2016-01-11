@@ -37,7 +37,7 @@ namespace Once
 
         public void RegenMaze()
         {
-            m_mazeGen.GenerateMaze(new MazeInfo(new Point(128, 128), 40, 30, 10, 0));
+            m_mazeGen.GenerateMaze(new MazeInfo(new Point(128, 128), 40, 30, 10, 40));
             Map = m_mazeGen.MapInformation.Map;
 
             m_LayerSize = new Point(32, 32);
