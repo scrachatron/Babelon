@@ -44,15 +44,15 @@ namespace Once
         protected override void Initialize()
         {
             Pixelclass.Content = Content;
-            m_Player = new Player();
+            m_level = new Level();
+            m_Player = new Player(m_level.LayerSize);
             m_input = new InputManager();
             m_cam = new Camera(GraphicsDevice.Viewport);
 
-            m_level = new Level();
-            
             base.Initialize();
 
             m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 100));
+            m_level.RegenMaze();
             m_Player.VirtualPosition = m_level.m_StartPos;
 
         }
@@ -76,13 +76,13 @@ namespace Once
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (m_input.WasPressedBack(Keys.Enter))
+            m_Player.UpdateMe(gameTime, m_level, m_input);
+
+            if (m_Player.VirtualPosition == m_level.m_WinPos || m_input.WasPressedBack(Keys.Enter))
             {
-                m_level.RegenMaze();// (new MazeInfo(new Point(65, 65), 10, 2, 2, 40));
+                m_level.RegenMaze();
                 m_Player.VirtualPosition = m_level.m_StartPos;
             }
-
-            m_Player.UpdateMe(gameTime, m_level, m_input);
 
             m_input.UpdateMe();
             m_cam.UpdateMe(m_Player.Position, new Point(m_level.Map.GetLength(0) * m_level.LayerSize.X, m_level.Map.GetLength(1) * m_level.LayerSize.Y));

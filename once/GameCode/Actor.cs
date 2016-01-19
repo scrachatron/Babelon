@@ -62,15 +62,13 @@ namespace Once
         }
         public virtual void UpdateMe(GameTime gt, Level level)
         {
-            m_rect.Width = level.LayerSize.X;
-            m_rect.Height = level.LayerSize.Y;
             m_rect.X = (int)Math.Round(m_position.X);
             m_rect.Y = (int)Math.Round(m_position.Y);
 
             if (m_rect.X != (int)m_targetPos.X || m_rect.Y != (int)m_targetPos.Y)
             {
                 m_velocity = new Vector2(m_virtualpos.X * level.LayerSize.X - Position.X, m_virtualpos.Y * level.LayerSize.Y - Position.Y);
-                m_position += m_velocity/4;
+                m_position += m_velocity/3;
             }
             else
                 Collision(level);
@@ -83,18 +81,26 @@ namespace Once
         {
             if (MoveHere.X != 0 && MoveHere.Y != 0)
             {
-                if (lvl.Map[VirtualPosition.X + MoveHere.X,VirtualPosition.Y] == 0
-                    && lvl.Map[VirtualPosition.X, VirtualPosition.Y + MoveHere.Y] == 0)
-                    if (lvl.Map[VirtualPosition.X + MoveHere.X, VirtualPosition.Y + MoveHere.Y] == 0)
-                    {
-                        m_virtualpos += MoveHere;
-                        m_targetPos = (m_virtualpos * lvl.LayerSize);
-                        
-                        return;
-                    }
-            }
+                Point tmp = new Point(0, 0);
+                if (lvl.Map[VirtualPosition.X + MoveHere.X, VirtualPosition.Y] == 0)
+                {
+                    tmp.X = MoveHere.X;
+                }
+                if (lvl.Map[VirtualPosition.X, VirtualPosition.Y + MoveHere.Y] == 0)
+                {
+                    tmp.Y = MoveHere.Y;
+                }
+                if (lvl.Map[VirtualPosition.X + tmp.X, VirtualPosition.Y + tmp.Y] == 0)
+                {
+                    m_virtualpos += tmp;
+                    m_targetPos = (m_virtualpos * lvl.LayerSize);
 
-            if (lvl.Map[VirtualPosition.X + MoveHere.X, VirtualPosition.Y + MoveHere.Y] == 0)
+                    return;
+                }
+
+
+            }
+            else if (lvl.Map[VirtualPosition.X + MoveHere.X, VirtualPosition.Y + MoveHere.Y] == 0)
             {
                 m_virtualpos += MoveHere;
                 m_targetPos = (m_virtualpos * lvl.LayerSize);
@@ -107,8 +113,8 @@ namespace Once
     class Player : Actor
     {
 
-        public Player()
-            :base(new Rectangle(0,0,32,32),Color.Red, 0)
+        public Player(Point dim)
+            :base(new Rectangle(0,0,dim.X,dim.Y),Color.Red, 0)
         {
 
         }

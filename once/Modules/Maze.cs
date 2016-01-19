@@ -128,11 +128,12 @@ namespace Once
                 if (overlaps)
                     continue;
 
-                m_rooms.Add(room);
+                
 
                 currentregion++;
 
                 Carve(room);
+                m_rooms.Add(room);
             }
         }
         private void Carve(Point pos)
