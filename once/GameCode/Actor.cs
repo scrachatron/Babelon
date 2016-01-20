@@ -31,6 +31,7 @@ namespace Once
                 m_position.Y = value.Y * m_rect.Height;
                 m_targetPos = m_position.ToPoint();
                 m_velocity = Vector2.Zero;
+                MoveHere = Point.Zero;
             }
         }
         public Vector2 Position

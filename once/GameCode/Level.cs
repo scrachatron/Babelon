@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Once
 {
@@ -20,22 +21,20 @@ namespace Once
         {
             get { return m_LayerSize; }
         }
-
         public Point m_StartPos;
         public Point m_WinPos;
         private Point m_LayerSize;
         public MazeGenerator m_mazeGen;
+        private int Height;
 
         public Level()
         {
             m_mazeGen = new MazeGenerator();
-
+            Height = 1;
             RegenMaze();
-            //m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 46));
-
         }
 
-        public void RegenMaze()
+        private void RegenMaze()
         {
             m_mazeGen.GenerateMaze(new MazeInfo(new Point(128, 100), 100, 7, 5, 60));
             Map = m_mazeGen.MapInformation.Map;
@@ -57,6 +56,53 @@ namespace Once
 
             //Map[m_WinPos.X, m_WinPos.Y] = 2;
             //Map[m_StartPos.X, m_StartPos.Y] = 3;
+
+        }
+
+        private void RegenTown()
+        {
+            for (int x = 0; x < Map.GetLength(0); x++)
+                for (int y = 0; y < Map.GetLength(1); y++)
+                {
+                    Map[x, y] = 1;
+                }
+            Rectangle entryway = new Rectangle(Map.GetLength(0) / 16, 5, Map.GetLength(0) / 8, 10);
+            Carve(entryway);
+
+            m_StartPos = new Point(entryway.X + ((entryway.Width / 3) * 2), entryway.Y + entryway.Height / 3);
+            m_WinPos = new Point(entryway.X + entryway.Width / 3, entryway.Y + entryway.Height / 3);
+        }
+        private void Carve(Rectangle rect)
+        {
+            for (int x = 0; x < rect.Width; x++)
+                for (int y = 0; y < rect.Height; y++)
+                {
+                    Map[rect.X + x, rect.Y + y] = 0;
+                }
+        }
+
+        public void UpdateMe(Player player,InputManager input)
+        {
+            if (player.VirtualPosition == m_WinPos && input.WasPressedBack(Keys.Enter))
+            {
+                Height++;
+                if (Height % 10 == 0)
+                    RegenTown();
+                else
+                    RegenMaze();
+                player.VirtualPosition = m_StartPos;
+            }
+            else if (player.VirtualPosition == m_StartPos && input.WasPressedBack(Keys.Enter))
+            {
+                Height--;
+                if (Height % 10 == 0)
+                    RegenTown();
+                else
+                    RegenMaze();
+                player.VirtualPosition = m_WinPos;
+            }
+
+
 
         }
 

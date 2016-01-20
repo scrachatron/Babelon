@@ -51,8 +51,7 @@ namespace Once
 
             base.Initialize();
 
-            m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 100));
-            m_level.RegenMaze();
+            //m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 100));
             m_Player.VirtualPosition = m_level.m_StartPos;
 
         }
@@ -69,7 +68,7 @@ namespace Once
 
         protected override void UnloadContent()
         {
-
+            
         }
         protected override void Update(GameTime gameTime)
         {
@@ -77,12 +76,7 @@ namespace Once
                 Exit();
 
             m_Player.UpdateMe(gameTime, m_level, m_input);
-
-            if (m_Player.VirtualPosition == m_level.m_WinPos || m_input.WasPressedBack(Keys.Enter))
-            {
-                m_level.RegenMaze();
-                m_Player.VirtualPosition = m_level.m_StartPos;
-            }
+            m_level.UpdateMe(m_Player, m_input);
 
             m_input.UpdateMe();
             m_cam.UpdateMe(m_Player.Position, new Point(m_level.Map.GetLength(0) * m_level.LayerSize.X, m_level.Map.GetLength(1) * m_level.LayerSize.Y));
