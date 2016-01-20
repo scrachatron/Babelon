@@ -106,6 +106,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GameCode\Actor.cs" />
+    <Compile Include="GameCode\Enemy.cs" />
+    <Compile Include="GameCode\NPC.cs" />
     <Compile Include="Modules\Astar.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Modules\Camera.cs" />

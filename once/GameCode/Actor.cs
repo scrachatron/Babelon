@@ -43,6 +43,11 @@ namespace Once
             }
         }
 
+        public static Point Dimentions
+        {
+            get; set;
+        }
+
         private Color m_tint;
         private Rectangle m_rect;
 
@@ -54,10 +59,11 @@ namespace Once
 
         protected Point MoveHere = new Point(0, 0);
 
-        public Actor(Rectangle rect, Color tint, int layer)
+        public Actor(Point location, Color tint, int layer)
         {
-            Rect = rect;
-            m_position = new Vector2(rect.X, rect.Y);
+            Rect = new Rectangle(location, Dimentions);
+
+            m_position = new Vector2(location.X, location.Y);
             m_targetPos = m_position.ToPoint();
             m_tint = tint;
         }
@@ -114,8 +120,8 @@ namespace Once
     class Player : Actor
     {
 
-        public Player(Point dim)
-            :base(new Rectangle(0,0,dim.X,dim.Y),Color.Red, 0)
+        public Player()
+            :base(new Point(0,0),Color.Red, 0)
         {
 
         }
@@ -141,4 +147,6 @@ namespace Once
             sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
         }
     }
+
+
 }

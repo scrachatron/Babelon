@@ -23,7 +23,7 @@ namespace Once
         }
         public Point m_StartPos;
         public Point m_WinPos;
-        private Point m_LayerSize;
+        public static Point m_LayerSize;
         public MazeGenerator m_mazeGen;
         private int Height;
 
@@ -39,7 +39,6 @@ namespace Once
             m_mazeGen.GenerateMaze(new MazeInfo(new Point(128, 100), 100, 7, 5, 60));
             Map = m_mazeGen.MapInformation.Map;
 
-            m_LayerSize = new Point(32, 32);
             Rectangle temprect;
             temprect = m_mazeGen.m_rooms[Game1.RNG.Next(0, m_mazeGen.m_rooms.Count)];
             Rectangle temprect2 = temprect;

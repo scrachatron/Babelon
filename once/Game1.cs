@@ -44,13 +44,16 @@ namespace Once
         protected override void Initialize()
         {
             Pixelclass.Content = Content;
+
+            Actor.Dimentions = new Point(32, 32);
+            Level.m_LayerSize = Actor.Dimentions;
             m_level = new Level();
-            m_Player = new Player(m_level.LayerSize);
+            m_Player = new Player();
             m_input = new InputManager();
             m_cam = new Camera(GraphicsDevice.Viewport);
 
             base.Initialize();
-
+            
             //m_level.m_mazeGen.GenerateMaze(new MazeInfo(new Point(65, 65), 10, 2, 2, 100));
             m_Player.VirtualPosition = m_level.m_StartPos;
 
@@ -63,7 +66,6 @@ namespace Once
             Pixelclass.Font = Content.Load<SpriteFont>("Font1");
             Pixelclass.Tfont = Content.Load<SpriteFont>("TinyFont");
 
-           
         }
 
         protected override void UnloadContent()
