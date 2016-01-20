@@ -61,9 +61,10 @@ namespace Once
 
         public Actor(Point location, Color tint, int layer)
         {
-            Rect = new Rectangle(location, Dimentions);
+            Rect = new Rectangle(location * Dimentions, Dimentions);
+            m_virtualpos = location;
 
-            m_position = new Vector2(location.X, location.Y);
+            m_position = new Vector2(Rect.X, Rect.Y);
             m_targetPos = m_position.ToPoint();
             m_tint = tint;
         }
@@ -79,11 +80,19 @@ namespace Once
             }
             else
                 Collision(level);
+
+            MoveHere = Point.Zero;
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
             sb.Draw(Pixel, m_rect , m_tint);
+            //sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
         }
+        public virtual void DrawMap(SpriteBatch sb)
+        {
+            sb.Draw(Pixel, new Rectangle(m_virtualpos * new Point(4, 4), new Point(4, 4)), m_tint);
+        }
+
         private void Collision(Level lvl)
         {
             if (MoveHere.X != 0 && MoveHere.Y != 0)
@@ -137,14 +146,10 @@ namespace Once
                 MoveHere.Y += 1;
 
             base.UpdateMe(gt, level);
-
-            MoveHere.X = 0;
-            MoveHere.Y = 0;
         }
         public override void DrawMe(SpriteBatch sb)
         {
             base.DrawMe(sb);
-            sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
         }
     }
 

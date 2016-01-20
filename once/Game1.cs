@@ -78,7 +78,7 @@ namespace Once
                 Exit();
 
             m_Player.UpdateMe(gameTime, m_level, m_input);
-            m_level.UpdateMe(m_Player, m_input);
+            m_level.UpdateMe(gameTime,m_Player, m_input);
 
             m_input.UpdateMe();
             m_cam.UpdateMe(m_Player.Position, new Point(m_level.Map.GetLength(0) * m_level.LayerSize.X, m_level.Map.GetLength(1) * m_level.LayerSize.Y));
@@ -94,7 +94,13 @@ namespace Once
             m_Player.DrawMe(spriteBatch);
             spriteBatch.End();
 
+            spriteBatch.Begin();
+            m_level.DrawMap(spriteBatch);
+            m_Player.DrawMap(spriteBatch);
+            spriteBatch.End();
+
             base.Draw(gameTime);
         }
+
     }
 }

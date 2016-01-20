@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Once.GameCode;
 
 namespace Once
 {
@@ -26,10 +27,12 @@ namespace Once
         public static Point m_LayerSize;
         public MazeGenerator m_mazeGen;
         private int Height;
+        private List<Enemy> m_enemies; 
 
         public Level()
         {
             m_mazeGen = new MazeGenerator();
+            m_enemies = new List<Enemy>();
             Height = 1;
             RegenMaze();
         }
@@ -55,7 +58,7 @@ namespace Once
 
             //Map[m_WinPos.X, m_WinPos.Y] = 2;
             //Map[m_StartPos.X, m_StartPos.Y] = 3;
-
+            m_enemies.Clear();
         }
 
         private void RegenTown()
@@ -70,6 +73,8 @@ namespace Once
 
             m_StartPos = new Point(entryway.X + ((entryway.Width / 3) * 2), entryway.Y + entryway.Height / 3);
             m_WinPos = new Point(entryway.X + entryway.Width / 3, entryway.Y + entryway.Height / 3);
+
+            m_enemies.Clear();
         }
         private void Carve(Rectangle rect)
         {
@@ -80,48 +85,94 @@ namespace Once
                 }
         }
 
-        public void UpdateMe(Player player,InputManager input)
+        public void UpdateMe(GameTime gt,Player player,InputManager input)
         {
-            if (player.VirtualPosition == m_WinPos && input.WasPressedBack(Keys.Enter))
+            if (input.WasPressedBack(Keys.Enter))
             {
-                Height++;
-                if (Height % 10 == 0)
-                    RegenTown();
-                else
-                    RegenMaze();
-                player.VirtualPosition = m_StartPos;
+                if (player.VirtualPosition == m_WinPos)
+                {
+                    Height++;
+                    if (Height % 10 == 0)
+                        RegenTown();
+                    else
+                        RegenMaze();
+                    player.VirtualPosition = m_StartPos;
+                }
+                else if (player.VirtualPosition == m_StartPos)
+                {
+                    Height--;
+                    if (Height % 10 == 0)
+                        RegenTown();
+                    else
+                        RegenMaze();
+                    player.VirtualPosition = m_WinPos;
+                }
             }
-            else if (player.VirtualPosition == m_StartPos && input.WasPressedBack(Keys.Enter))
+            if (input.IsDown(Keys.Space))
             {
-                Height--;
-                if (Height % 10 == 0)
-                    RegenTown();
-                else
-                    RegenMaze();
-                player.VirtualPosition = m_WinPos;
+                Rectangle temprect;
+                temprect = m_mazeGen.m_rooms[Game1.RNG.Next(0, m_mazeGen.m_rooms.Count)];
+
+                m_enemies.Add(new Enemy(new Point(temprect.X + Game1.RNG.Next(1, temprect.Width - 1), temprect.Y + Game1.RNG.Next(1, temprect.Height - 1))));
             }
-
-
-
+            for (int i = 0; i < m_enemies.Count; i++)
+                m_enemies[i].UpdateMe(gt, this);
         }
-
         public void DrawMe(SpriteBatch sb)
         {
+            sb.Draw(Pixel, new Rectangle(0, 0, Map.GetLength(0) * m_LayerSize.X, Map.GetLength(1) * m_LayerSize.Y), Color.Gray);
 
             for (int x = 0; x < Map.GetLength(0); x++)
             {
                 for (int y = 0; y < Map.GetLength(1); y++)
                 {
                     if (Map[x, y] == 1)
+                    {
                         sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Black);
+                        
+                    }
                     else if (Map[x, y] == 2)
+                    {
                         sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
+
+                    }
                     else if (Map[x, y] == 3)
+                    {
                         sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+
+                    }
                 }
             }
+
+            for (int i = 0; i < m_enemies.Count; i++)
+                m_enemies[i].DrawMe(sb);
+
             sb.Draw(Pixel, new Rectangle(m_WinPos.X * m_LayerSize.X, m_WinPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
             sb.Draw(Pixel, new Rectangle(m_StartPos.X * m_LayerSize.X, m_StartPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+        }
+
+        public void DrawMap(SpriteBatch sb)
+        {
+            int size = 4;
+
+            for (int x = 0; x < Map.GetLength(0); x++)
+            {
+                for (int y = 0; y < Map.GetLength(1); y++)
+                {
+                    if (Map[x, y] == 0)
+                    {
+                        sb.Draw(Pixel, new Rectangle(x *size, y * size, size, size), Color.White * 0.2f);
+                    }
+                }
+            }
+
+            for (int i = 0; i < m_enemies.Count; i++)
+                m_enemies[i].DrawMap(sb);
+
+            sb.Draw(Pixel, new Rectangle(m_WinPos.X * size, m_WinPos.Y * size, size, size), Color.Green * 0.5f);
+            sb.Draw(Pixel, new Rectangle(m_StartPos.X * size, m_StartPos.Y * size, size, size), Color.Red * 0.5f);
+
+
         }
     }
 }

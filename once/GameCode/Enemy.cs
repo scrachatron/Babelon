@@ -17,6 +17,9 @@ namespace Once.GameCode
         }
         public override void UpdateMe(GameTime gt, Level level)
         {
+            MoveHere.X = Game1.RNG.Next(-1,2);
+            MoveHere.Y = Game1.RNG.Next(-1, 2);
+
             base.UpdateMe(gt, level);
         }
         public override void DrawMe(SpriteBatch sb)
