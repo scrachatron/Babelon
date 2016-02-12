@@ -84,7 +84,7 @@ namespace Once
             m_cam.UpdateMe(m_Player.Position, new Point(m_level.Map.GetLength(0) * m_level.LayerSize.X, m_level.Map.GetLength(1) * m_level.LayerSize.Y));
             base.Update(gameTime);
         }
-
+   
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -93,11 +93,13 @@ namespace Once
             m_level.DrawMe(spriteBatch);
             m_Player.DrawMe(spriteBatch);
             spriteBatch.End();
-
-            spriteBatch.Begin();
-            m_level.DrawMap(spriteBatch);
-            m_Player.DrawMap(spriteBatch);
-            spriteBatch.End();
+            if (m_input.IsDown(Keys.Tab))
+            {
+                spriteBatch.Begin();
+                m_level.DrawMap(spriteBatch,m_Player);
+                //m_Player.DrawMap(spriteBatch);
+                spriteBatch.End();
+            }
 
             base.Draw(gameTime);
         }

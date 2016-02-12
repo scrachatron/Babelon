@@ -151,26 +151,32 @@ namespace Once
             sb.Draw(Pixel, new Rectangle(m_StartPos.X * m_LayerSize.X, m_StartPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
         }
 
-        public void DrawMap(SpriteBatch sb)
+        public void DrawMap(SpriteBatch sb,Player p)
         {
+            Vector2 temp = new Vector2(Game1.graphics.PreferredBackBufferWidth / 2, Game1.graphics.PreferredBackBufferHeight / 2);
+
             int size = 4;
 
+            temp.X -= (Map.GetLength(0)*size) / 2;
+            temp.Y -= (Map.GetLength(1) * size) / 2;
             for (int x = 0; x < Map.GetLength(0); x++)
             {
                 for (int y = 0; y < Map.GetLength(1); y++)
                 {
                     if (Map[x, y] == 0)
                     {
-                        sb.Draw(Pixel, new Rectangle(x *size, y * size, size, size), Color.White * 0.2f);
+                        sb.Draw(Pixel, new Rectangle((x *size) + (int)temp.X, (y * size) + (int)temp.Y, size, size), Color.White * 0.2f);
                     }
                 }
             }
 
             for (int i = 0; i < m_enemies.Count; i++)
-                m_enemies[i].DrawMap(sb);
+                m_enemies[i].DrawMap(sb,temp);
 
-            sb.Draw(Pixel, new Rectangle(m_WinPos.X * size, m_WinPos.Y * size, size, size), Color.Green * 0.5f);
-            sb.Draw(Pixel, new Rectangle(m_StartPos.X * size, m_StartPos.Y * size, size, size), Color.Red * 0.5f);
+            p.DrawMap(sb, temp);
+
+            sb.Draw(Pixel, new Rectangle((m_WinPos.X * size) + (int)temp.X, (m_WinPos.Y * size) + (int)temp.Y, size, size), Color.Green * 0.5f);
+            sb.Draw(Pixel, new Rectangle((m_StartPos.X * size) + (int)temp.X, (m_StartPos.Y * size) + (int)temp.Y, size, size), Color.Red * 0.5f);
 
 
         }

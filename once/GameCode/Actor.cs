@@ -88,9 +88,9 @@ namespace Once
             sb.Draw(Pixel, m_rect , m_tint);
             //sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
         }
-        public virtual void DrawMap(SpriteBatch sb)
+        public virtual void DrawMap(SpriteBatch sb,Vector2 offset)
         {
-            sb.Draw(Pixel, new Rectangle(m_virtualpos * new Point(4, 4), new Point(4, 4)), m_tint);
+            sb.Draw(Pixel, new Rectangle((m_virtualpos * new Point(4, 4)) + offset.ToPoint(), new Point(4, 4)), m_tint);
         }
 
         private void Collision(Level lvl)
